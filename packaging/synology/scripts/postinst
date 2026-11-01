@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+[ -s /usr/local/etc/nas-media-folders/config.json ]
+echo "DSM package installed without root lifecycle scripts."

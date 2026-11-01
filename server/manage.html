@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NAS Media Folders — управление</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#dce7f5;background:#101722;color-scheme:dark}*{box-sizing:border-box}body{margin:0}main{max-width:1080px;margin:auto;padding:40px 28px}header{display:flex;align-items:center;gap:18px;margin-bottom:32px}header img{width:76px;height:76px}h1{font-size:28px;letter-spacing:-.8px;margin:0 0 5px}p{line-height:1.6;color:#9aafc5;margin:8px 0}.eyebrow{font-size:12px;letter-spacing:1.5px;color:#66d5f3;text-transform:uppercase}.panel{background:#192332;border:1px solid #2b3a4d;border-radius:20px;padding:26px;margin-bottom:20px}h2{font-size:18px;margin:0 0 18px}.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}.stat{background:#111c2a;border-radius:14px;padding:20px}.stat strong{display:block;font-size:32px;color:#f2f8ff;margin-bottom:6px}button,.button{font:inherit;font-weight:600;cursor:pointer;border:0;border-radius:11px;padding:12px 18px;background:#39b6e8;color:#062238;text-decoration:none;display:inline-block}button.secondary,.secondary{background:#27374b;color:#dce7f5}button:disabled{opacity:.5;cursor:wait}input,select{font:inherit;border:1px solid #42556c;background:#111c2a;color:#fff;border-radius:10px;padding:12px;max-width:100%}input[type=checkbox]{width:19px;height:19px;accent-color:#39b6e8}label{display:block;margin:16px 0 8px}label.row{margin:22px 0}.help{font-size:13px}.message{min-height:25px;color:#72dfb2;white-space:pre-wrap}.error{color:#ffaeae}footer{margin-top:28px;color:#71869e;font-size:12px}#login{max-width:440px}#login input{width:100%}[hidden]{display:none!important}@media(max-width:600px){main{padding:24px 16px}.grid{grid-template-columns:1fr}.stat strong{font-size:26px}h1{font-size:23px}header img{width:60px;height:60px}}
+</style>
+<main>
+<header><img src="/web/nas-media-icon.png" alt=""><div><div class="eyebrow">Домашняя медиатека</div><h1>NAS Media Folders</h1><p>Управление приложением</p></div></header>
+<section id="login" class="panel"><h2>Войти</h2><p>Учётная запись медиасервера, которой вы пользуетесь на телевизоре.</p><form id="loginForm"><label for="username">Пользователь</label><input id="username" autocomplete="username" value="" required><label for="password">Пароль</label><input id="password" type="password" autocomplete="current-password" required><div class="row" style="margin-top:22px"><button id="loginButton">Войти</button><a class="button secondary" href="/web/">Медиаклиент</a></div></form></section>
+<div id="dashboard" hidden>
+<section class="panel"><div class="row space"><div><div class="eyebrow" id="serverVersion">Сервер</div><h2 id="libraryTitle" style="margin:6px 0">Медиатека подключена</h2></div><a class="button" href="/web/">Открыть медиатеку ↗</a></div><div class="grid"><div class="stat"><strong id="videoCount">—</strong>Видео</div><div class="stat"><strong id="audioCount">—</strong>Аудиозаписи</div><div class="stat"><strong id="photoCount">—</strong>Фотографии</div></div><p id="lastSync"></p><p id="syncError" class="error"></p><p class="help">Каталог обновляется из индекса Synology Media Server. Запуск и остановка приложения — в Центре пакетов DSM.</p><button class="secondary" id="reloadStatus">Обновить статус</button></section>
+<section class="panel" id="playbackSettings"><h2>Воспроизведение и просмотр</h2><form id="settingsForm"><label for="pageSize">Элементов на странице</label><select id="pageSize"><option>24</option><option>48</option><option>100</option><option>250</option><option>500</option><option>1000</option></select><p class="help">После изменения заново откройте клиент на телевизоре.</p><label class="row"><input type="checkbox" id="autoNext">Автоматически продолжать видео из очереди</label><p class="help">Работает при воспроизведении папки целиком. Фото открываются в оригинальном качестве.</p><button id="saveButton">Сохранить настройки</button></form></section>
+<section class="panel" id="accountsPanel" hidden><h2>Пользователи приложения</h2><p>Отдельные учётные записи, избранное и история. Права действуют в этом приложении; доступ через DLNA настраивается отдельно.</p><div id="accountsList"></div><form id="accountForm"><h3 id="accountTitle">Новый пользователь</h3><input type="hidden" id="accountId"><label for="accountName">Имя</label><input id="accountName" autocomplete="off" required><label for="accountPassword">Пароль</label><input id="accountPassword" type="password" autocomplete="new-password"><p class="help">При редактировании оставьте пустым, чтобы сохранить пароль.</p><label for="accountRole">Роль</label><select id="accountRole"><option value="viewer">Зритель</option><option value="admin">Администратор</option></select><label class="row"><input id="accountDisabled" type="checkbox">Учётная запись отключена</label><div id="accountLibraries"></div><p class="help">Администратору доступны все библиотеки. Зрителю — только отмеченные.</p><div class="row"><button>Сохранить пользователя</button><button type="button" class="secondary" id="newAccount">Новый пользователь</button></div></form></section>
+<section class="panel" id="configurationPanel" hidden><h2>Подключение и библиотеки</h2><p>Изменения вступают в силу после перезапуска приложения в Центре пакетов DSM.</p><form id="configurationForm"><div id="configurationFields"></div><h3>Корневые папки</h3><div id="configurationRoots"></div><p class="help">Идентификатор DLNA берётся из Synology ContentDirectory. По одному корню для видео, музыки и фотографий. Каталог данных не перемещается через эту форму.</p><p id="configurationState"></p><button>Сохранить конфигурацию</button></form></section>
+<button id="logout" class="secondary">Выйти</button>
+</div>
+<p role="status" id="message" class="message"></p>
+<footer>Разработчик: a.voronov · NAS Media Folders</footer>
+</main>
+<script>
+'use strict';
+const byId=id=>document.getElementById(id);
+let token=sessionStorage.getItem('nas-management-token')||'';
+function message(text,error=false){byId('message').textContent=text;byId('message').classList.toggle('error',error)}
+function showLogin(){byId('login').hidden=false;byId('dashboard').hidden=true}
+async function api(path,body){
+ const headers={'X-Emby-Token':token};
+ const options={headers,cache:'no-store'};
+ if(body!==undefined){options.method='POST';headers['Content-Type']='application/json';options.body=JSON.stringify(body)}
+ const response=await fetch(path,options);
+ if(response.status===401){token='';sessionStorage.removeItem('nas-management-token');showLogin();throw Error('Войдите в медиасервер.')}
+ if(!response.ok)throw Error('Запрос не выполнен: HTTP '+response.status);
+ return response.status===204?null:response.json();
+}
+async function loadStatus(){
+ const status=await api('/System/Index/Status');
+ const count=status.Counts||{};
+ for(const [id,key] of [['videoCount','Video'],['audioCount','Audio'],['photoCount','Photo']])byId(id).textContent=(count[key]||0).toLocaleString('ru-RU');
+ byId('serverVersion').textContent='Сервер '+status.Version+' · доступен';
+ const date=new Date(status.LastSync);
+ byId('lastSync').textContent='Последнее обновление: '+(date.getFullYear()>2000?date.toLocaleString('ru-RU'):'ожидается');
+ byId('libraryTitle').textContent=status.LastError?'Не удалось обновить индекс':'Медиатека подключена';
+ byId('syncError').textContent=status.LastError?'Проверьте, запущен ли Synology Media Server. Ранее загруженная медиатека остаётся доступна.':'';
+}
+async function load(){
+ const me=await api('/NAS/Me');
+ const admin=me.Role==='admin';
+ byId('playbackSettings').hidden=!admin;
+ byId('accountsPanel').hidden=!admin;byId('configurationPanel').hidden=!admin;
+ if(admin){const settings=await api('/NAS/Settings');
+ byId('pageSize').value=String(settings.PageSize);byId('autoNext').checked=settings.AutoPlayNext;
+ await loadAccounts();await loadConfiguration();}
+ await loadStatus();byId('login').hidden=true;byId('dashboard').hidden=false;
+}
+byId('loginForm').addEventListener('submit',async event=>{
+ event.preventDefault();byId('loginButton').disabled=true;message('');
+ try{const result=await api('/Users/AuthenticateByName',{Username:byId('username').value,Pw:byId('password').value});token=result.AccessToken;sessionStorage.setItem('nas-management-token',token);byId('password').value='';await load()}catch(error){message(error.message,true)}finally{byId('loginButton').disabled=false}
+});
+byId('settingsForm').addEventListener('submit',async event=>{
+ event.preventDefault();byId('saveButton').disabled=true;
+ try{await api('/NAS/Settings',{PageSize:Number(byId('pageSize').value),AutoPlayNext:byId('autoNext').checked});message('Настройки сохранены. Заново откройте приложение на ТВ, чтобы применить размер страницы.')}catch(error){message(error.message,true)}finally{byId('saveButton').disabled=false}
+});
+byId('reloadStatus').addEventListener('click',()=>loadStatus().catch(error=>message(error.message,true)));
+byId('logout').addEventListener('click',async()=>{try{await api('/Sessions/Logout',{})}catch(error){message(error.message,true)}finally{token='';sessionStorage.removeItem('nas-management-token');showLogin()}});
+
+let accounts=[],libraries=[],configuration=null;
+function element(tag,text){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node}
+function editAccount(account){
+ byId('accountId').value=account?.ID||'';byId('accountName').value=account?.Username||'';
+ byId('accountPassword').value='';byId('accountRole').value=account?.Role||'viewer';
+ byId('accountDisabled').checked=!!account?.Disabled;byId('accountTitle').textContent=account?'Изменить пользователя':'Новый пользователь';
+ byId('accountLibraries').replaceChildren();
+ for(const root of libraries){const label=element('label',root.Name);label.className='row';const input=element('input');input.type='checkbox';input.dataset.root=root.Key;input.checked=(account?.AllowedRoots||[]).includes(root.Key);label.prepend(input);byId('accountLibraries').append(label)}
+}
+async function loadAccounts(){const result=await api('/NAS/Users');accounts=result.Items;libraries=result.Libraries;byId('accountsList').replaceChildren();
+ for(const account of accounts){const row=element('div');row.className='row space';row.style.marginBottom='12px';row.append(element('span',account.Username+' · '+(account.Role==='admin'?'администратор':'зритель')+(account.Disabled?' · отключён':'')));const button=element('button','Изменить');button.className='secondary';button.type='button';button.onclick=()=>editAccount(account);row.append(button);byId('accountsList').append(row)}editAccount(null)}
+byId('newAccount').onclick=()=>editAccount(null);
+byId('accountForm').onsubmit=async event=>{event.preventDefault();const id=byId('accountId').value;const change={Username:byId('accountName').value,Password:byId('accountPassword').value,Role:byId('accountRole').value,Disabled:byId('accountDisabled').checked,AllowedRoots:Array.from(byId('accountLibraries').querySelectorAll('input:checked')).map(input=>input.dataset.root)};
+ try{await api('/NAS/Users'+(id?'/'+encodeURIComponent(id):''),change);await loadAccounts();message('Пользователь сохранён.')}catch(error){message(error.message,true)}};
+const configurationLabels={ServerName:'Название сервера',Listen:'Адрес прослушивания (host:port)',PublicURL:'Внешний адрес приложения (необязательно)',SynologyControlURL:'Synology ContentDirectory URL',SynologyMediaBase:'Synology Media Server URL',DLNAUserAgent:'DLNA User-Agent',DLNAXUserAgent:'DLNA X-User-Agent',FFmpeg:'Путь к ffmpeg',MetadataFile:'Файл метаданных, подготовленный на ПК',RefreshSeconds:'Интервал обновления индекса, секунд'};
+async function loadConfiguration(){const result=await api('/NAS/Configuration');configuration=result.Configuration;byId('configurationFields').replaceChildren();
+ for(const [key,title] of Object.entries(configurationLabels)){const label=element('label',title);const input=element('input');input.id='config-'+key;input.value=configuration[key]??'';input.style.width='100%';if(key==='RefreshSeconds')input.type='number';label.htmlFor=input.id;byId('configurationFields').append(label,input)}
+ byId('configurationRoots').replaceChildren();
+ for(const [index,root] of configuration.Roots.entries()){const group=element('fieldset');group.append(element('legend',root.Key));for(const [key,title] of [['Name','Название'],['LocalPath','Путь на NAS'],['ObjectID','Идентификатор DLNA']]){const label=element('label',title);const input=element('input');input.dataset.index=index;input.dataset.key=key;input.value=root[key];input.style.width='100%';label.append(input);group.append(label)}byId('configurationRoots').append(group)}
+ byId('configurationState').textContent=(result.RestartRequired?'Требуется перезапуск. ':'')+'Данные: '+result.DataDirectory;
+}
+byId('configurationForm').onsubmit=async event=>{event.preventDefault();const change=structuredClone(configuration);for(const key of Object.keys(configurationLabels)){change[key]=byId('config-'+key).value;if(key==='RefreshSeconds')change[key]=Number(change[key])}for(const input of byId('configurationRoots').querySelectorAll('input'))change.Roots[Number(input.dataset.index)][input.dataset.key]=input.value;
+ try{await api('/NAS/Configuration',change);await loadConfiguration();message('Конфигурация сохранена. Перезапустите приложение через DSM.')}catch(error){message(error.message,true)}};
+
+if(token)load().catch(error=>message(error.message,true));
+</script>
+</html>

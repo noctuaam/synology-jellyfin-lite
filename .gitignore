@@ -1,0 +1,15 @@
+/dist/
+/build/
+/data/
+/vendor-web/
+/.local/
+*.spk
+*.exe
+*.db
+*.db-shm
+*.db-wal
+__pycache__/
+*.pyc
+.env
+config.local.json
+credentials.json

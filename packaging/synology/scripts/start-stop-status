@@ -1,0 +1,28 @@
+#!/bin/sh
+set -eu
+unit=pkg-NASMediaFolders-server.service
+case "${1:-}" in
+ start)
+  # systemd starts the server through the pkgctl unit's dependency.
+  # This script runs without root and must not control a system unit itself.
+  systemctl is-active --quiet "$unit"
+  ;;
+ stop)
+  # PartOf= propagates the package controller's stop to the server.
+  exit 0
+  ;;
+ status)
+  systemctl is-active --quiet "$unit" && exit 0
+  exit 3
+  ;;
+ prestart)
+  [ -f /usr/local/etc/nas-media-folders/config.json ]
+  # If a legacy updater re-enabled the old daemon, fail rather than double-start.
+  systemctl is-active --quiet nas-jelly-lite.service && {
+   echo 'Legacy service is active; stop it before starting the DSM package'; exit 1;
+  }
+  exit 0
+  ;;
+ prestop) exit 0 ;;
+ *) echo 'Usage: start-stop-status start|stop|status|prestart|prestop'; exit 1 ;;
+esac

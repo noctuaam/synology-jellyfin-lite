@@ -1,0 +1,47 @@
+{
+  "original_sha256": "3e7775b3b9d0a20e79de963bd13cae255b87ed1db2ac7b0215c86d061b40f10c",
+  "patched_sha256": "9a13be4b81292dee2fd74991e01b271ecea42d0ba15ab48c406b875d02fa4273",
+  "package": "MediaServer 2.2.2-3412 armv8",
+  "changes": [
+    {
+      "offset": 18776,
+      "before": "e6031baa",
+      "after": "c66e0010"
+    },
+    {
+      "offset": 19324,
+      "before": "e5031baa",
+      "after": "a55d0010"
+    },
+    {
+      "offset": 20897,
+      "before": "c3",
+      "after": "83"
+    },
+    {
+      "offset": 22310,
+      "before": "42",
+      "after": "4d"
+    },
+    {
+      "offset": 22703,
+      "before": "50484f544f5f2573",
+      "after": "46494c455f257300"
+    },
+    {
+      "offset": 22719,
+      "before": "50484f544f3a2573",
+      "after": "46494c455f257300"
+    },
+    {
+      "offset": 22732,
+      "before": "50484f544f5f2573",
+      "after": "46494c455f257300"
+    },
+    {
+      "offset": 22748,
+      "before": "50484f544f3a2573",
+      "after": "46494c455f257300"
+    }
+  ]
+}

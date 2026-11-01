@@ -1,0 +1,9 @@
+{
+  "ServerName": "NAS Media Folders",
+  "Listen": "0.0.0.0:8097",
+  "Data": "/volume1/@nas-media-folders",
+  "Web": "/var/packages/NASMediaFolders/target/web",
+  "FFmpeg": "/var/packages/MediaServer/target/bin/ffmpeg",
+  "RefreshSeconds": 900,
+  "DefaultPageSize": 100
+}

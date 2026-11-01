@@ -1,0 +1,7 @@
+Tool: built-in image_gen, transparent_background=true.
+
+Prompt:
+Create one premium application icon for a personal NAS media library app called NAS Media Folders, used in Synology DSM. No text or letters. A beautifully crafted compact folder in rich ocean blue and turquoise, with an integrated crisp white play triangle cutout on the front; subtle layered folder sheets hint at movies, music and photos without tiny pictograms. Refined dimensional soft-material icon, restrained depth, rounded corners, elegant highlights, clean bold silhouette legible at 32 and 64 pixels. Front view with a very slight dimensional angle, centered, generous safe padding, occupies 82 percent of square canvas. Transparent background outside the icon, no background tile, no floor, no mockup, no surrounding objects, no watermark. A distinctive professional desktop application icon, not a generic clipart folder.
+
+The original alpha channel is preserved in nas-media-folders-master.png.
+icon_16.png through icon_256.png are downscaled DSM assets.

@@ -1,0 +1,26 @@
+[Unit]
+Description=NAS Media Folders - DSM package
+After=network.target pkgctl-MediaServer.service
+PartOf=pkgctl-NASMediaFolders.service
+
+[Service]
+Type=simple
+User=MediaServer
+Group=MediaServer
+ExecStart=/var/packages/NASMediaFolders/target/bin/nas-media-folders -config /usr/local/etc/nas-media-folders/config.json
+Environment=GOMAXPROCS=1
+Nice=19
+CPUAccounting=true
+CPUQuota=50%
+MemoryAccounting=true
+MemoryLimit=128M
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+LimitNOFILE=512
+Restart=on-failure
+RestartSec=15
+StartLimitInterval=300
+StartLimitBurst=3
+TimeoutStopSec=20
+UMask=0077

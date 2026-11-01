@@ -1,0 +1,3 @@
+# One DSM username per line. Only these Photos folders will be exposed.
+alice
+bob

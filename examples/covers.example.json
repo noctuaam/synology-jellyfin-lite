@@ -1,0 +1,6 @@
+{
+  "Root": "\\\\nas-hostname\\video",
+  "Python": "C:\\Python\\python.exe",
+  "FFmpeg": "C:\\Tools\\ffmpeg\\bin\\ffmpeg.exe",
+  "FFprobe": "C:\\Tools\\ffmpeg\\bin\\ffprobe.exe"
+}
